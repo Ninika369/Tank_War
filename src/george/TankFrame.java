@@ -5,6 +5,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: George Sun
@@ -13,10 +15,14 @@ import java.awt.event.WindowEvent;
  */
 public class TankFrame extends Frame {
 
-    int x = 200, y = 200;
+    Tank myTank = new Tank(200, 200, Direction.DOWN, this);
+//    Bullet bullet = new Bullet(300, 300, Direction.DOWN);
+    static final int game_width = 800;
+    static final int game_height = 600;
+    List<Bullet> bullets = new ArrayList<Bullet>();
 
     public TankFrame() {
-        setSize(800, 600);
+        setSize(game_width, game_height);
         setResizable(false);
         setTitle("tank war");
         setVisible(true);
@@ -29,14 +35,35 @@ public class TankFrame extends Frame {
         });
     }
 
+    Image offScreenImage = null;
+    @Override
+    public void update(Graphics g) {
+        if (offScreenImage == null) {
+            offScreenImage = this.createImage(game_width, game_height);
+        }
+        Graphics gOffScreen = offScreenImage.getGraphics();
+        Color c = gOffScreen.getColor();
+        gOffScreen.setColor(Color.BLACK);
+        gOffScreen.fillRect(0,0,game_width,game_height);
+        gOffScreen.setColor(c);
+        paint(gOffScreen);
+        g.drawImage(offScreenImage,0,0,null);
+    }
+
 
     // 窗口需要重新绘制时（出现，改变大小等等情况），自动调用此方法
     // g相当于系统递给coder的一支画笔
     @Override
     public void paint(Graphics g) {
-        g.fillRect(x,y, 50,50);
-//        x += 30;
-//        y += 30;
+        Color c = g.getColor();
+        g.setColor(Color.WHITE);
+        g.drawString("How many bullets left：" + bullets.size(), 10, 60);
+        g.setColor(c);
+
+        myTank.paint(g);
+        for (int i = 0; i < bullets.size(); i++) {
+            bullets.get(i).paint(g);
+        }
     }
 
 
@@ -44,7 +71,7 @@ public class TankFrame extends Frame {
 
         boolean bL, bU, bR, bD;
 
-        // 某个键被按下去时调用
+        // works when some buttons are pressed
         @Override
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
@@ -64,12 +91,10 @@ public class TankFrame extends Frame {
                 default:
                     break;
             }
-            repaint();
-//            x += 50;
-//            repaint();
+            setTankDir();
         }
 
-        // 某个键被松开时调用
+        // works when some buttons are released
         @Override
         public void keyReleased(KeyEvent e) {
             int key = e.getKeyCode();
@@ -86,11 +111,35 @@ public class TankFrame extends Frame {
                 case KeyEvent.VK_DOWN:
                     bD = false;
                     break;
+                case KeyEvent.VK_SPACE:
+                    myTank.fire();
+                    break;
                 default:
                     break;
             }
-            repaint();
+            setTankDir();
         }
+
+
+        private void setTankDir() {
+            if (bL || bR || bU || bD)
+                myTank.setMoving(true);
+            else
+                myTank.setMoving(false);
+
+            if (bL)
+                myTank.setDir(Direction.LEFT);
+            if (bR)
+                myTank.setDir(Direction.RIGHT);
+            if (bU)
+                myTank.setDir(Direction.UP);
+            if (bD)
+                myTank.setDir(Direction.DOWN);
+
+
+        }
+
+
     }
 
 }
