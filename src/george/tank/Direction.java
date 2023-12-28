@@ -1,4 +1,4 @@
-package george;
+package george.tank;
 
 /**
  * @Author: George Sun

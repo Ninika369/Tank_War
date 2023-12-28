@@ -1,4 +1,4 @@
-package george;
+package george.tank;
 
 import java.awt.*;
 
@@ -14,6 +14,11 @@ public class Tank {
     private boolean moving = false;
     private TankFrame tf;
 
+    private boolean alive = true;
+
+    public static int height = ResourceMgr.tankD.getHeight();
+    public static int width = ResourceMgr.tankD.getWidth();
+
     public Tank(int x, int y, Direction dir, TankFrame tf) {
         this.x = x;
         this.y = y;
@@ -26,7 +31,25 @@ public class Tank {
     }
 
     public void paint(Graphics g) {
-        g.fillRect(x,y, 50,50);
+        if (!alive) {
+            tf.enemies.remove(this);
+            return;
+        }
+
+        switch (dir) {
+            case LEFT:
+                g.drawImage(ResourceMgr.tankL, x, y, null);
+                break;
+            case RIGHT:
+                g.drawImage(ResourceMgr.tankR, x, y, null);
+                break;
+            case UP:
+                g.drawImage(ResourceMgr.tankU, x, y, null);
+                break;
+            case DOWN:
+                g.drawImage(ResourceMgr.tankD, x, y, null);
+                break;
+        }
         move();
     }
 
@@ -79,7 +102,13 @@ public class Tank {
     }
 
     public void fire() {
-        tf.bullets.add(new Bullet(x, y, dir, tf));
+        int bx = this.x + Tank.width / 2 - Bullet.width / 2;
+        int by = this.y + Tank.height / 2 - Bullet.height / 2 + 3;
+        tf.bullets.add(new Bullet(bx, by, dir, tf));
 
+    }
+
+    public void die() {
+        alive = false;
     }
 }

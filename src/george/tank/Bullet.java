@@ -1,4 +1,4 @@
-package george;
+package george.tank;
 
 import java.awt.*;
 
@@ -8,9 +8,9 @@ import java.awt.*;
  * @Description: george
  */
 public class Bullet {
-    private static final int speed = 5;
-    private static int width = 20;
-    private static int height = 20;
+    private static final int speed = 10;
+    public static int width = ResourceMgr.bulletD.getWidth();
+    public static int height = ResourceMgr.bulletD.getHeight();
 
     private TankFrame tf;
 
@@ -29,8 +29,8 @@ public class Bullet {
     }
 
     public Bullet(int x, int y, Direction dir, TankFrame tf) {
-        this.x = x + 10;
-        this.y = y + 10;
+        this.x = x;
+        this.y = y;
         this.dir = dir;
         this.tf = tf;
     }
@@ -40,10 +40,20 @@ public class Bullet {
         if (!isAlive)
             tf.bullets.remove(this);
 
-        Color c = g.getColor();
-        g.setColor(Color.RED);
-        g.fillOval(x, y, width, height);
-        g.setColor(c);
+        switch (dir) {
+            case LEFT:
+                g.drawImage(ResourceMgr.bulletL, x, y, null);
+                break;
+            case RIGHT:
+                g.drawImage(ResourceMgr.bulletR, x, y, null);
+                break;
+            case UP:
+                g.drawImage(ResourceMgr.bulletU, x, y, null);
+                break;
+            case DOWN:
+                g.drawImage(ResourceMgr.bulletD, x, y, null);
+                break;
+        }
 
         move();
     }
@@ -66,5 +76,20 @@ public class Bullet {
 
         if (x < 0 || y < 0 || x > TankFrame.game_width || y > TankFrame.game_height)
             isAlive = false;
+    }
+
+
+    public void collide(Tank tank) {
+        Rectangle b = new Rectangle(x, y, width, height);
+        Rectangle t = new Rectangle(tank.getX(), tank.getY(), Tank.width, Tank.height);
+        if (b.intersects(t)) {
+            tank.die();
+            die();
+        }
+    }
+
+
+    public void die() {
+        setAlive(false);
     }
 }

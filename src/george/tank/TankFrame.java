@@ -1,4 +1,8 @@
-package george;
+package george.tank;
+
+import george.tank.Bullet;
+import george.tank.Direction;
+import george.tank.Tank;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -15,11 +19,16 @@ import java.util.List;
  */
 public class TankFrame extends Frame {
 
-    Tank myTank = new Tank(200, 200, Direction.DOWN, this);
+    Tank myTank = new Tank(200, 400, Direction.DOWN, this);
 //    Bullet bullet = new Bullet(300, 300, Direction.DOWN);
     static final int game_width = 800;
     static final int game_height = 600;
+
+    // represents the bullets shot by a tank
     List<Bullet> bullets = new ArrayList<Bullet>();
+
+    // enemies a tank have
+    List<Tank> enemies = new ArrayList<>();
 
     public TankFrame() {
         setSize(game_width, game_height);
@@ -35,7 +44,9 @@ public class TankFrame extends Frame {
         });
     }
 
+    // To avoid flashes when tank or bullets move
     Image offScreenImage = null;
+
     @Override
     public void update(Graphics g) {
         if (offScreenImage == null) {
@@ -44,10 +55,10 @@ public class TankFrame extends Frame {
         Graphics gOffScreen = offScreenImage.getGraphics();
         Color c = gOffScreen.getColor();
         gOffScreen.setColor(Color.BLACK);
-        gOffScreen.fillRect(0,0,game_width,game_height);
+        gOffScreen.fillRect(0, 0, game_width, game_height);
         gOffScreen.setColor(c);
         paint(gOffScreen);
-        g.drawImage(offScreenImage,0,0,null);
+        g.drawImage(offScreenImage, 0, 0, null);
     }
 
 
@@ -57,12 +68,23 @@ public class TankFrame extends Frame {
     public void paint(Graphics g) {
         Color c = g.getColor();
         g.setColor(Color.WHITE);
-        g.drawString("How many bullets left：" + bullets.size(), 10, 60);
+        g.drawString("敌人的数量: "+enemies.size(), 10, 60);
         g.setColor(c);
+
 
         myTank.paint(g);
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).paint(g);
+        }
+
+        for (int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).paint(g);
+        }
+
+        for (int i = 0; i < bullets.size(); i++) {
+            for (int j = 0; j < enemies.size(); j++) {
+                bullets.get(i).collide(enemies.get(j));
+            }
         }
     }
 
