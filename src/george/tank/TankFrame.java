@@ -1,5 +1,6 @@
 package george.tank;
 
+
 import george.tank.Bullet;
 import george.tank.Direction;
 import george.tank.Tank;
@@ -19,16 +20,22 @@ import java.util.List;
  */
 public class TankFrame extends Frame {
 
-    Tank myTank = new Tank(200, 400, Direction.DOWN, this);
+    Tank myTank = new Tank(200, 400, Direction.DOWN, george.tank.Type.GOOD, this);
 //    Bullet bullet = new Bullet(300, 300, Direction.DOWN);
-    static final int game_width = 800;
-    static final int game_height = 600;
+    static final int game_width = 1080;
+    static final int game_height = 960;
+
+    private int count = 0;
 
     // represents the bullets shot by a tank
     List<Bullet> bullets = new ArrayList<Bullet>();
 
     // enemies a tank have
     List<Tank> enemies = new ArrayList<>();
+
+    // list to contain explosions when tanks die
+    List<Explosion> explosions = new ArrayList<>();
+
 
     public TankFrame() {
         setSize(game_width, game_height);
@@ -68,11 +75,15 @@ public class TankFrame extends Frame {
     public void paint(Graphics g) {
         Color c = g.getColor();
         g.setColor(Color.WHITE);
+        g.drawString("子弹的数量: "+bullets.size(), 10, 120);
         g.drawString("敌人的数量: "+enemies.size(), 10, 60);
+        g.drawString("爆炸的数量: "+explosions.size(), 10, 90);
+
         g.setColor(c);
 
 
         myTank.paint(g);
+
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).paint(g);
         }
@@ -83,8 +94,14 @@ public class TankFrame extends Frame {
 
         for (int i = 0; i < bullets.size(); i++) {
             for (int j = 0; j < enemies.size(); j++) {
-                bullets.get(i).collide(enemies.get(j));
+                Tank enemy = enemies.get(j);
+                bullets.get(i).collide(enemy);
+
             }
+        }
+
+        for (int i = 0; i < explosions.size(); i++) {
+            explosions.get(i).paint(g);
         }
     }
 
@@ -114,6 +131,7 @@ public class TankFrame extends Frame {
                     break;
             }
             setTankDir();
+            new Thread(()->new Audio("audio/tank_move.wav").play()).start();
         }
 
         // works when some buttons are released

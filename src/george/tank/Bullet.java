@@ -12,33 +12,49 @@ public class Bullet {
     public static int width = ResourceMgr.bulletD.getWidth();
     public static int height = ResourceMgr.bulletD.getHeight();
 
+    private Type type;
+
     private TankFrame tf;
 
     private int x, y;
 
+    // used to contain bullets created by tanks
+    Rectangle rect = new Rectangle();
+
     private Direction dir;
 
-    private boolean isAlive = true;
+    private boolean alive = true;
+
+    public Type getType() {
+        return this.type;
+    }
 
     public boolean isAlive() {
-        return isAlive;
+        return alive;
     }
 
     public void setAlive(boolean alive) {
-        isAlive = alive;
+        this.alive = alive;
     }
 
-    public Bullet(int x, int y, Direction dir, TankFrame tf) {
+    public Bullet(int x, int y, Direction dir, Type type, TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
+        this.type = type;
         this.tf = tf;
+
+        rect.x = this.x;
+        rect.y = this.y;
+        rect.width = width;
+        rect.height = height;
     }
 
 
     public void paint(Graphics g) {
-        if (!isAlive)
+        if (!isAlive()) {
             tf.bullets.remove(this);
+        }
 
         switch (dir) {
             case LEFT:
@@ -74,17 +90,23 @@ public class Bullet {
                 break;
         }
 
+        rect.x = this.x;
+        rect.y = this.y;
+
         if (x < 0 || y < 0 || x > TankFrame.game_width || y > TankFrame.game_height)
-            isAlive = false;
+            die();
     }
 
 
     public void collide(Tank tank) {
-        Rectangle b = new Rectangle(x, y, width, height);
-        Rectangle t = new Rectangle(tank.getX(), tank.getY(), Tank.width, Tank.height);
-        if (b.intersects(t)) {
+        if (this.getType() == tank.getType())
+            return;
+        if (rect.intersects(tank.getRect())) {
             tank.die();
-            die();
+            this.die();
+            int eX = tank.getX() + Tank.width/2 - Explosion.width/2;
+            int eY = tank.getY() + Tank.height/2 - Explosion.height/2;
+            tf.explosions.add(new Explosion(eX, eY, tf));
         }
     }
 
