@@ -22,8 +22,8 @@ public class TankFrame extends Frame {
 
     Tank myTank = new Tank(200, 400, Direction.DOWN, george.tank.Type.GOOD, this);
 //    Bullet bullet = new Bullet(300, 300, Direction.DOWN);
-    static final int game_width = 1080;
-    static final int game_height = 960;
+    static final int game_width = PropertyMgr.getInt("gameWidth");
+    static final int game_height = PropertyMgr.getInt("gameHeight");
 
     private int count = 0;
 

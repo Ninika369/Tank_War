@@ -11,7 +11,7 @@ import java.util.Random;
 public class Tank {
     private int x, y;
     private Direction dir = Direction.DOWN;
-    private static final int speed = 5;
+    private static final int speed = PropertyMgr.getInt("tankSpeed");
     private boolean moving = true;
     private TankFrame tf;
 
