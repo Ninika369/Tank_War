@@ -48,6 +48,8 @@ public class Bullet {
         rect.y = this.y;
         rect.width = width;
         rect.height = height;
+
+        tf.bullets.add(this);
     }
 
 

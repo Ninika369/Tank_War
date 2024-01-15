@@ -28,6 +28,8 @@ public class Tank {
     public static int height = ResourceMgr.goodTankD.getHeight();
     public static int width = ResourceMgr.goodTankD.getWidth();
 
+    FireStrategy fs;
+
     public Tank(int x, int y, Direction dir, Type type, TankFrame tf) {
         this.x = x;
         this.y = y;
@@ -39,6 +41,23 @@ public class Tank {
         rect.y = y;
         rect.width = width;
         rect.height = height;
+
+        if (type == Type.GOOD) {
+            String goodFSName = (String) PropertyMgr.get("goodFS");
+            try {
+                fs = (FireStrategy) Class.forName(goodFSName).getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            String badFSName = (String) PropertyMgr.get("badFS");
+            try {
+                fs = (FireStrategy) Class.forName(badFSName).getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void setDir(Direction dir) {
@@ -147,11 +166,7 @@ public class Tank {
     }
 
     public void fire() {
-        int bx = this.x + Tank.width / 2 - Bullet.width / 2;
-        int by = this.y + Tank.height / 2 - Bullet.height / 2 + 3;
-        tf.bullets.add(new Bullet(bx, by, dir, getType(), tf));
-        if(this.getType() == Type.GOOD)
-            new Thread(()->new Audio("audio/tank_fire.wav").play()).start();
+        fs.fire(this);
 
     }
 
@@ -169,5 +184,9 @@ public class Tank {
 
     public Rectangle getRect() {
         return rect;
+    }
+
+    public TankFrame getTf() {
+        return tf;
     }
 }
