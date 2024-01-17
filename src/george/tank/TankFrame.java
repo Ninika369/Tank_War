@@ -4,6 +4,7 @@ package george.tank;
 import george.tank.Bullet;
 import george.tank.Direction;
 import george.tank.Tank;
+import george.tank.abstractfactory.*;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -28,13 +29,15 @@ public class TankFrame extends Frame {
     private int count = 0;
 
     // represents the bullets shot by a tank
-    List<Bullet> bullets = new ArrayList<Bullet>();
+    List<BaseBullet> bullets = new ArrayList<>();
 
     // enemies a tank have
     List<Tank> enemies = new ArrayList<>();
 
     // list to contain explosions when tanks die
-    List<Explosion> explosions = new ArrayList<>();
+    List<BaseExplosion> explosions = new ArrayList<>();
+
+    private AbstractFactory af = RectFactory.getInstance();
 
 
     public TankFrame() {
@@ -103,6 +106,10 @@ public class TankFrame extends Frame {
         for (int i = 0; i < explosions.size(); i++) {
             explosions.get(i).paint(g);
         }
+    }
+
+    public AbstractFactory getAf() {
+        return af;
     }
 
 

@@ -1,5 +1,7 @@
 package george.tank;
 
+import george.tank.abstractfactory.BaseTank;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -8,7 +10,7 @@ import java.util.Random;
  * @Date: 2023-12-26-15:44
  * @Description: george
  */
-public class Tank {
+public class Tank extends BaseTank {
     private int x, y;
     private Direction dir = Direction.DOWN;
     private static final int speed = PropertyMgr.getInt("tankSpeed");

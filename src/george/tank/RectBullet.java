@@ -9,7 +9,7 @@ import java.awt.*;
  * @Date: 2023-12-26-17:03
  * @Description: george
  */
-public class Bullet extends BaseBullet {
+public class RectBullet extends BaseBullet {
     private static final int speed = PropertyMgr.getInt("bulletSpeed");
     public static int width = ResourceMgr.bulletD.getWidth();
     public static int height = ResourceMgr.bulletD.getHeight();
@@ -39,7 +39,7 @@ public class Bullet extends BaseBullet {
         this.alive = alive;
     }
 
-    public Bullet(int x, int y, Direction dir, Type type, TankFrame tf) {
+    public RectBullet(int x, int y, Direction dir, Type type, TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
@@ -60,20 +60,10 @@ public class Bullet extends BaseBullet {
             tf.bullets.remove(this);
         }
 
-        switch (dir) {
-            case LEFT:
-                g.drawImage(ResourceMgr.bulletL, x, y, null);
-                break;
-            case RIGHT:
-                g.drawImage(ResourceMgr.bulletR, x, y, null);
-                break;
-            case UP:
-                g.drawImage(ResourceMgr.bulletU, x, y, null);
-                break;
-            case DOWN:
-                g.drawImage(ResourceMgr.bulletD, x, y, null);
-                break;
-        }
+        Color c = g.getColor();
+        g.setColor(Color.yellow);
+        g.fillRect(x, y, 20, 20);
+        g.setColor(c);
 
         move();
     }

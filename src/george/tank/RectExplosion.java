@@ -6,10 +6,11 @@ import java.awt.*;
 
 /**
  * @Author: George Sun
- * @Date: 2023-12-26-17:03
- * @Description: george
+ * @Date: 2024-01-17-00:26
+ * @Description: george.tank
  */
-public class Explosion extends BaseExplosion {
+public class RectExplosion extends BaseExplosion {
+
     public static int width = ResourceMgr.explodes[0].getWidth();
     public static int height = ResourceMgr.explodes[0].getHeight();
 
@@ -30,7 +31,7 @@ public class Explosion extends BaseExplosion {
         this.alive = alive;
     }
 
-    public Explosion(int x, int y, TankFrame tf) {
+    public RectExplosion(int x, int y, TankFrame tf) {
         this.x = x;
         this.y = y;
         this.tf = tf;
@@ -38,12 +39,19 @@ public class Explosion extends BaseExplosion {
     }
 
 
+    @Override
     public void paint(Graphics g) {
 
-        g.drawImage(ResourceMgr.explodes[step++], x, y, null);
-        if (step >= ResourceMgr.explodes.length)
+//        g.drawImage(ResourceMgr.explodes[step++], x, y, null);
+        Color c = g.getColor();
+        g.setColor(Color.RED);
+        g.fillRect(x, y, 10 * step, 10*step);
+        step++;
+
+        if (step >= 10)
             tf.explosions.remove(this);
 
+        g.setColor(c);
     }
 
 
