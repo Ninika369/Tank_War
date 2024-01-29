@@ -1,7 +1,5 @@
 package george.tank;
 
-import george.tank.abstractfactory.BaseTank;
-
 import java.awt.*;
 import java.util.Random;
 
@@ -10,12 +8,13 @@ import java.util.Random;
  * @Date: 2023-12-26-15:44
  * @Description: george
  */
-public class Tank extends BaseTank {
+public class Tank {
     private int x, y;
     private Direction dir = Direction.DOWN;
     private static final int speed = PropertyMgr.getInt("tankSpeed");
     private boolean moving = true;
-    private TankFrame tf;
+
+    GameModel gm;
 
     private Type type;
 
@@ -30,36 +29,17 @@ public class Tank extends BaseTank {
     public static int height = ResourceMgr.goodTankD.getHeight();
     public static int width = ResourceMgr.goodTankD.getWidth();
 
-    FireStrategy fs;
-
-    public Tank(int x, int y, Direction dir, Type type, TankFrame tf) {
+    public Tank(int x, int y, Direction dir, Type type, GameModel gm) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.type = type;
-        this.tf = tf;
+        this.gm = gm;
 
         rect.x = x;
         rect.y = y;
         rect.width = width;
         rect.height = height;
-
-        if (type == Type.GOOD) {
-            String goodFSName = (String) PropertyMgr.get("goodFS");
-            try {
-                fs = (FireStrategy) Class.forName(goodFSName).getDeclaredConstructor().newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            String badFSName = (String) PropertyMgr.get("badFS");
-            try {
-                fs = (FireStrategy) Class.forName(badFSName).getDeclaredConstructor().newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void setDir(Direction dir) {
@@ -68,7 +48,7 @@ public class Tank extends BaseTank {
 
     public void paint(Graphics g) {
         if (!alive) {
-            tf.enemies.remove(this);
+            gm.enemies.remove(this);
             return;
         }
 
@@ -168,7 +148,11 @@ public class Tank extends BaseTank {
     }
 
     public void fire() {
-        fs.fire(this);
+        int bx = this.x + Tank.width / 2 - Bullet.width / 2;
+        int by = this.y + Tank.height / 2 - Bullet.height / 2 + 3;
+        gm.bullets.add(new Bullet(bx, by, dir, getType(), gm));
+        if(this.getType() == Type.GOOD)
+            new Thread(()->new Audio("audio/tank_fire.wav").play()).start();
 
     }
 
@@ -186,9 +170,5 @@ public class Tank extends BaseTank {
 
     public Rectangle getRect() {
         return rect;
-    }
-
-    public TankFrame getTf() {
-        return tf;
     }
 }

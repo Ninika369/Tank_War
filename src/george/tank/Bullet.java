@@ -1,7 +1,5 @@
 package george.tank;
 
-import george.tank.abstractfactory.BaseBullet;
-
 import java.awt.*;
 
 /**
@@ -9,14 +7,15 @@ import java.awt.*;
  * @Date: 2023-12-26-17:03
  * @Description: george
  */
-public class Bullet extends BaseBullet {
+public class Bullet {
     private static final int speed = PropertyMgr.getInt("bulletSpeed");
     public static int width = ResourceMgr.bulletD.getWidth();
     public static int height = ResourceMgr.bulletD.getHeight();
 
     private Type type;
 
-    private TankFrame tf;
+
+    GameModel gm;
 
     private int x, y;
 
@@ -39,25 +38,23 @@ public class Bullet extends BaseBullet {
         this.alive = alive;
     }
 
-    public Bullet(int x, int y, Direction dir, Type type, TankFrame tf) {
+    public Bullet(int x, int y, Direction dir, Type type, GameModel gm) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.type = type;
-        this.tf = tf;
+        this.gm = gm;
 
         rect.x = this.x;
         rect.y = this.y;
         rect.width = width;
         rect.height = height;
-
-        tf.bullets.add(this);
     }
 
 
     public void paint(Graphics g) {
         if (!isAlive()) {
-            tf.bullets.remove(this);
+            gm.bullets.remove(this);
         }
 
         switch (dir) {
@@ -110,7 +107,7 @@ public class Bullet extends BaseBullet {
             this.die();
             int eX = tank.getX() + Tank.width/2 - Explosion.width/2;
             int eY = tank.getY() + Tank.height/2 - Explosion.height/2;
-            tf.explosions.add(tf.getAf().createExplode(eX, eY, tf));
+            gm.explosions.add(new Explosion(eX, eY, gm));
         }
     }
 
