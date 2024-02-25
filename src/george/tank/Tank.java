@@ -1,5 +1,8 @@
 package george.tank;
 
+import george.tank.decorators.RectDecorator;
+import george.tank.decorators.TailDecorator;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -8,13 +11,14 @@ import java.util.Random;
  * @Date: 2023-12-26-15:44
  * @Description: george
  */
-public class Tank {
-    private int x, y;
+public class Tank extends GameOject {
+
+    private int preX, preY;
+
     private Direction dir = Direction.DOWN;
     private static final int speed = PropertyMgr.getInt("tankSpeed");
     private boolean moving = true;
 
-    GameModel gm;
 
     private Type type;
 
@@ -29,12 +33,11 @@ public class Tank {
     public static int height = ResourceMgr.goodTankD.getHeight();
     public static int width = ResourceMgr.goodTankD.getWidth();
 
-    public Tank(int x, int y, Direction dir, Type type, GameModel gm) {
+    public Tank(int x, int y, Direction dir, Type type) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.type = type;
-        this.gm = gm;
 
         rect.x = x;
         rect.y = y;
@@ -48,7 +51,7 @@ public class Tank {
 
     public void paint(Graphics g) {
         if (!alive) {
-            gm.enemies.remove(this);
+            GameModel.getInstance().remove(this);
             return;
         }
 
@@ -69,6 +72,16 @@ public class Tank {
         move();
     }
 
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
 
     public boolean isAlive() {
         return alive;
@@ -79,6 +92,8 @@ public class Tank {
     }
 
     private void move() {
+        preX = x;
+        preY = y;
         if (!isMoving())
             return;
         switch (dir) {
@@ -150,7 +165,10 @@ public class Tank {
     public void fire() {
         int bx = this.x + Tank.width / 2 - Bullet.width / 2;
         int by = this.y + Tank.height / 2 - Bullet.height / 2 + 3;
-        gm.bullets.add(new Bullet(bx, by, dir, getType(), gm));
+        GameModel.getInstance().add(
+                new RectDecorator(
+                        new TailDecorator(
+                                new Bullet(bx, by, dir, getType()))));
         if(this.getType() == Type.GOOD)
             new Thread(()->new Audio("audio/tank_fire.wav").play()).start();
 
@@ -171,4 +189,19 @@ public class Tank {
     public Rectangle getRect() {
         return rect;
     }
+
+    public int getPreX() {
+        return preX;
+    }
+
+    public int getPreY() {
+        return preY;
+    }
+
+    public void back() {
+        x = preX;
+        y = preY;
+    }
+
+
 }

@@ -25,7 +25,7 @@ public class TankFrame extends Frame {
 
     private int count = 0;
 
-    GameModel gm = new GameModel();
+    GameModel gm = GameModel.getInstance();
 
 
     public TankFrame() {

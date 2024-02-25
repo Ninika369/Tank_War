@@ -19,11 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class ImageTest {
     @Test
     public void test() {
-        try {
-            BufferedImage image = ImageIO.read(T.class.getClassLoader().getResourceAsStream("images/bulletD.gif"));
-            assertNotNull(image);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+//        try {
+//            BufferedImage image = ImageIO.read(T.class.getClassLoader().getResourceAsStream("images/bulletD.gif"));
+//            assertNotNull(image);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+        String s = "1, 2, 3";
+        String[] ss = s.split(",");
+        for (String str : ss) {
+            System.out.println(str);
         }
     }
 

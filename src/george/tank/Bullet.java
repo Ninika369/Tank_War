@@ -7,7 +7,7 @@ import java.awt.*;
  * @Date: 2023-12-26-17:03
  * @Description: george
  */
-public class Bullet {
+public class Bullet extends GameOject {
     private static final int speed = PropertyMgr.getInt("bulletSpeed");
     public static int width = ResourceMgr.bulletD.getWidth();
     public static int height = ResourceMgr.bulletD.getHeight();
@@ -15,12 +15,13 @@ public class Bullet {
     private Type type;
 
 
-    GameModel gm;
+    public Rectangle getRect() {
+        return rect;
+    }
 
-    private int x, y;
 
     // used to contain bullets created by tanks
-    Rectangle rect = new Rectangle();
+    private Rectangle rect = new Rectangle();
 
     private Direction dir;
 
@@ -38,23 +39,23 @@ public class Bullet {
         this.alive = alive;
     }
 
-    public Bullet(int x, int y, Direction dir, Type type, GameModel gm) {
+    public Bullet(int x, int y, Direction dir, Type type) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.type = type;
-        this.gm = gm;
 
         rect.x = this.x;
         rect.y = this.y;
         rect.width = width;
         rect.height = height;
+        GameModel.getInstance().add(this);
     }
 
 
     public void paint(Graphics g) {
         if (!isAlive()) {
-            gm.bullets.remove(this);
+            GameModel.getInstance().remove(this);
         }
 
         switch (dir) {
@@ -73,6 +74,16 @@ public class Bullet {
         }
 
         move();
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
     }
 
     private void move() {
@@ -96,19 +107,6 @@ public class Bullet {
 
         if (x < 0 || y < 0 || x > TankFrame.game_width || y > TankFrame.game_height)
             die();
-    }
-
-
-    public void collide(Tank tank) {
-        if (this.getType() == tank.getType())
-            return;
-        if (rect.intersects(tank.getRect())) {
-            tank.die();
-            this.die();
-            int eX = tank.getX() + Tank.width/2 - Explosion.width/2;
-            int eY = tank.getY() + Tank.height/2 - Explosion.height/2;
-            gm.explosions.add(new Explosion(eX, eY, gm));
-        }
     }
 
 

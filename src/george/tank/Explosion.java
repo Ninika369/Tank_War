@@ -8,14 +8,9 @@ import java.awt.*;
  * @Date: 2023-12-26-17:03
  * @Description: george
  */
-public class Explosion {
+public class Explosion extends GameOject {
     public static int width = ResourceMgr.explodes[0].getWidth();
     public static int height = ResourceMgr.explodes[0].getHeight();
-
-
-    GameModel gm;
-
-    private int x, y;
 
     private boolean alive = true;
 
@@ -29,11 +24,11 @@ public class Explosion {
         this.alive = alive;
     }
 
-    public Explosion(int x, int y, GameModel gm) {
+    public Explosion(int x, int y) {
         this.x = x;
         this.y = y;
-        this.gm = gm;
         new Audio("audio/explode.wav").play();
+        GameModel.getInstance().add(this);
     }
 
 
@@ -41,8 +36,18 @@ public class Explosion {
 
         g.drawImage(ResourceMgr.explodes[step++], x, y, null);
         if (step >= ResourceMgr.explodes.length)
-            gm.explosions.remove(this);
+            GameModel.getInstance().remove(this);
 
+    }
+
+    @Override
+    public int getWidth() {
+        return 0;
+    }
+
+    @Override
+    public int getHeight() {
+        return 0;
     }
 
 

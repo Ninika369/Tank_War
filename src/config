@@ -7,3 +7,6 @@ gameHeight=960
 #BulletStrategyName
 goodFS=george.tank.FourDirectionStrategy
 badFS=george.tank.DefaultFireStrategy
+
+#Colliders
+colliders=george.tank.BulletTankCollider,george.tank.TankTankCollider,george.tank.BulletWallCollider,george.tank.TankWallCollider
