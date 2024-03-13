@@ -1,6 +1,7 @@
 package george.tank;
 
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  * @Author: George Sun
@@ -9,7 +10,7 @@ import java.awt.*;
  */
 
 // Father class of all objects in game
-public abstract class GameOject {
+public abstract class GameOject implements Serializable {
 
     public int x, y;
     public abstract void paint(Graphics g);

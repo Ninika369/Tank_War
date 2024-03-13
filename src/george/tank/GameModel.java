@@ -3,6 +3,7 @@ package george.tank;
 import com.sun.org.apache.xml.internal.security.Init;
 
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class GameModel {
     }
 
     Tank myTank;
+
+    //Define where you would like to store your tanks by yourself
+    String address;
 
 //    List<Bullet> bullets = new ArrayList<Bullet>();
 
@@ -90,9 +94,54 @@ public class GameModel {
                 chain.collide(o1, o2);
             }
         }
-
-
     }
+
+
+    public void save() {
+        File file = new File(address);
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(new FileOutputStream(file));
+            oos.writeObject(myTank);
+            oos.writeObject(objects);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (oos != null) {
+                try {
+                    oos.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void load() {
+        File file = new File(address);
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream(file));
+            myTank = (Tank)ois.readObject();
+            objects = (List)ois.readObject();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 
     public Tank getMyTank() {
         return myTank;

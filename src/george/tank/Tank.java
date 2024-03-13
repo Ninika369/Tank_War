@@ -165,10 +165,12 @@ public class Tank extends GameOject {
     public void fire() {
         int bx = this.x + Tank.width / 2 - Bullet.width / 2;
         int by = this.y + Tank.height / 2 - Bullet.height / 2 + 3;
-        GameModel.getInstance().add(
-                new RectDecorator(
-                        new TailDecorator(
-                                new Bullet(bx, by, dir, getType()))));
+//        Decorator pattern
+//        GameModel.getInstance().add(
+//                new RectDecorator(
+//                        new TailDecorator(
+//                                new Bullet(bx, by, dir, getType()))));
+        GameModel.getInstance().add(new Bullet(bx, by, dir, getType()));
         if(this.getType() == Type.GOOD)
             new Thread(()->new Audio("audio/tank_fire.wav").play()).start();
 
